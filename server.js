@@ -32,7 +32,7 @@ db.connect(err => {
 function promptUser() {
     inquirer
     .prompt({
-        name: 'user prompt',
+        name: 'userprompt',
         type: 'list',
         message: 'Employee tracker started, please select an option.',
         choices: [
@@ -48,4 +48,20 @@ function promptUser() {
             'Exit'
         ]
     })
-}
+    .then(answer => {
+        switch (answer.userprompt) {
+            case 'View departments':
+                viewDepartments();
+        }
+    });
+};
+//  use query to get departments table
+function viewDepartments() {
+    var query = 'SELECT * FROM departments';
+    db.query(query, function(err, res) {
+        if(err)throw err;
+        console.log('All Departments:');
+        // displays response
+        console.table(res);
+    })
+};
