@@ -27,6 +27,7 @@ db.connect(err => {
     });
 });
 
+
 // start inquirer prompt
 
 function promptUser() {
@@ -52,6 +53,16 @@ function promptUser() {
         switch (answer.userprompt) {
             case 'View departments':
                 viewDepartments();
+                break;
+                // return promptUser();
+            case 'View roles':
+                viewRoles();
+                break;
+                // return promptUser();
+            case 'View employees':
+                viewEmployees();
+                break;
+                // return promptUser();
         }
     });
 };
@@ -63,5 +74,46 @@ function viewDepartments() {
         console.log('All Departments:');
         // displays response
         console.table(res);
+        returnPrompt();
+    })
+};
+
+// use query to get roles table 
+function viewRoles() {
+    var query = 'SELECT * FROM roles';
+    db.query(query, function(err,res) {
+        if(err)throw err;
+        console.log('All Roles:');
+        console.table(res);
+        returnPrompt();
+    })
+};
+
+function viewEmployees() {
+    var query = 'SELECT * FROM employees';
+    db.query(query, function(err,res) {
+        if(err)throw err;
+        console.log('All Employees:');
+        console.table(res);
+        returnPrompt();
+    })
+};
+
+function returnPrompt() {
+    inquirer
+    .prompt({
+        name: 'returnUser',
+        type: 'list',
+        message: 'Return to options ',
+        choices: [
+            ' here.'
+        ]
+    })
+    .then(answer => {
+        switch(answer.returnUser) {
+            case ' here.':
+                promptUser();
+                break;
+        }
     })
 };
