@@ -63,6 +63,9 @@ function promptUser() {
                 viewEmployees();
                 break;
                 // return promptUser();
+            case 'Add department':
+                addDepartment();
+                break;
         }
     });
 };
@@ -98,6 +101,23 @@ function viewEmployees() {
         returnPrompt();
     })
 };
+
+function addDepartment() {
+    inquirer
+    .prompt({
+        name: 'add_department',
+        type: 'input',
+        message: 'Enter new department name'
+    })
+    .then(answer => {
+        db.query('INSERT INTO departments SET ?',{
+            name: answer.add_department
+        });
+        console.log('added!!');
+    })
+}
+
+//return prompt
 
 function returnPrompt() {
     inquirer
