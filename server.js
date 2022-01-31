@@ -4,18 +4,6 @@ const inquirer = require('inquirer');
 const db = require('./db/connection');
 
 
-// const PORT = process.env.PORT || 3001;
-
-// // Start server after DB connection
-// db.connect(err => {
-//     if (err) throw err;
-//     console.log('Database connected.');
-//     app.listen(PORT, () => {
-//         console.log(`--Server running on port ${PORT}`);
-//     });
-// });
-
-
 // start inquirer prompt
 
 function promptUser() {
@@ -25,7 +13,7 @@ function promptUser() {
         type: 'list',
         message: 'Employee tracker started, please select an option.',
         choices: [
-
+// options for user to choose from
             'View departments',
             'View roles',
             'View employees',
@@ -39,6 +27,7 @@ function promptUser() {
             'Exit'
         ]
     })
+    // run this function if this option is selected
     .then(answer => {
         switch (answer.userprompt) {
             case 'View departments':
@@ -62,25 +51,37 @@ function promptUser() {
             case 'Remove role':
                 removeRole();
                 break;
+            case 'Add employee':
+                addEmployee();
+                break;
+            case 'Update employee':
+                updateEmployee();
+                break;
+            case 'Delete employee':
+                removeEmployee();
+                break;
+            case 'Exit':
+                db.end();
+                break;
         }
     });
 };
 //  use query to get departments table
 function viewDepartments() {
-    var query = 'SELECT * FROM departments';
-    db.query(query, function(err, res) {
+    // select ALL from departments table
+    db.query('SELECT * FROM departments', function(err, res) {
         if(err)throw err;
         console.log('All Departments:');
         // displays response
         console.table(res);
+        // selection to return back to prompt options
         returnPrompt();
     })
 };
 
 // use query to get roles table 
 function viewRoles() {
-    var query = 'SELECT * FROM roles';
-    db.query(query, function(err,res) {
+    db.query('SELECT * FROM roles', function(err,res) {
         if(err)throw err;
         console.log('All Roles:');
         console.table(res);
@@ -89,8 +90,7 @@ function viewRoles() {
 };
 
 function viewEmployees() {
-    var query = 'SELECT * FROM employees';
-    db.query(query, function(err,res) {
+    db.query('SELECT * FROM employees', function(err,res) {
         if(err)throw err;
         console.log('All Employees:');
         console.table(res);
@@ -110,6 +110,7 @@ function addDepartment() {
             name: answer.add_department
         });
         console.log('department added!!');
+        //displays department table to show the new data
         viewDepartments();
     })
 };
@@ -135,6 +136,7 @@ function addRole(){
     ])
     .then(answer => {
         db.query('INSERT INTO roles SET ?', {
+            // uses name of questions above to select the answer and insert into corresponding columns on roles table
             title: answer.role_name,
             salary: answer.role_salary,
             department_id: answer.role_dep
@@ -161,6 +163,7 @@ function removeDepartment() {
     })
 };
 
+// remove role
 
 function removeRole() {
     inquirer
@@ -177,7 +180,87 @@ function removeRole() {
         viewRoles();
     })
 };
-//ret
+
+function addEmployee() {
+    inquirer
+    .prompt(
+        [
+            {
+                name: 'employee_first',
+                type: 'input',
+                message: 'Please enter the first name of your new employee'
+            },
+            {
+                name: 'employee_last',
+                type: 'input',
+                message: 'Please enter the last name of your new employee'
+            },
+            {
+                name: 'employee_role',
+                type: 'input',
+                message: 'What is the Role ID for this employee?'
+            },
+            {
+                name: 'employee_manager',
+                type: 'input',
+                message: 'What is the Manager ID for this employee?'
+            }
+        ]
+    ).then(answer => {
+        db.query('INSERT INTO employees SET ?', {
+            // takes answers from questions above and inserts into corresponding columns on employees table
+            first_name: answer.employee_first,
+            last_name: answer.employee_last,
+            role_id: answer.employee_role,
+            manager_id: answer.employee_manager
+        });
+        console.log('Employee added!')
+        viewEmployees();
+    })
+};
+
+function updateEmployee() {
+    inquirer
+    .prompt(
+        [
+            {
+                name: 'update_employee',
+                type: 'input',
+                message: 'Please enter the Employee ID to update role'
+            },
+            {
+                name: 'update_role',
+                type: 'input',
+                message: 'What is the NEW role ID for this employee?'
+            }
+        ]
+    ).then(answer => {
+        db.query('UPDATE employees SET role_id = ? WHERE id = ?',
+        [
+            answer.update_role,
+            answer.update_employee
+        ]);
+        console.log('Employee updated!');
+        viewEmployees();
+    })
+};
+
+function removeEmployee() {
+    inquirer
+    .prompt({
+        name: 'remove_emp',
+        type: 'input',
+        message: 'Are you sure you want to REMOVE and employee? (PERMANENT) enter Employee ID:'
+    })
+    .then(answer => {
+        db.query('DELETE FROM employees WHERE ?', {
+            id: answer.remove_emp
+        })
+        console.log('Employee removed!');
+        viewEmployees();
+    })
+};
+
 //return prompt
 
 function returnPrompt() {
