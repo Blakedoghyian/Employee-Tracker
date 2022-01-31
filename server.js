@@ -4,16 +4,16 @@ const inquirer = require('inquirer');
 const db = require('./db/connection');
 
 
-const PORT = process.env.PORT || 3001;
+// const PORT = process.env.PORT || 3001;
 
-// Start server after DB connection
-db.connect(err => {
-    if (err) throw err;
-    console.log('Database connected.');
-    app.listen(PORT, () => {
-        console.log(`--Server running on port ${PORT}`);
-    });
-});
+// // Start server after DB connection
+// db.connect(err => {
+//     if (err) throw err;
+//     console.log('Database connected.');
+//     app.listen(PORT, () => {
+//         console.log(`--Server running on port ${PORT}`);
+//     });
+// });
 
 
 // start inquirer prompt
@@ -32,6 +32,7 @@ function promptUser() {
             'Add department',
             'Remove department',
             'Add role',
+            'Remove role',
             'Add employee',
             'Update employee',
             'Delete employee',
