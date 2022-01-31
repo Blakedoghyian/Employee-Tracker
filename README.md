@@ -19,3 +19,25 @@
 * THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
 * WHEN I choose to update an employee role
 * THEN I am prompted to select an employee to update and their new role and this information is updated in the database
+
+# Getting Started
+* open terminal
+* run 'npm install' to install dependencies 
+* open mysql shell by running 'mysql -u root -p' and enter credentials
+* run 'source schema.sql' file from terminal
+* after, run 'source seeds.sql' from mysql shell then type 'exit'
+* run 'node server.js' to begin user prompts
+
+## Repository 
+* https://github.com/Blakedoghyian/employee-tracker
+
+## Walkthrough video
+* https://watch.screencastify.com/v/hoyqwnkqeEhHoZh0a350
+
+## Questions 
+
+* Please use this email to reach me directly with any questions or concerns:
+* <a href="mailto:xblakedx@gmail.com">xblakedx@gmail.com</a>
+
+## Screenshot
+
