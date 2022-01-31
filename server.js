@@ -42,6 +42,7 @@ function promptUser() {
             'View roles',
             'View employees',
             'Add department',
+            'Remove department',
             'Add role',
             'Add employee',
             'Update employee',
@@ -54,17 +55,23 @@ function promptUser() {
             case 'View departments':
                 viewDepartments();
                 break;
-                // return promptUser();
             case 'View roles':
                 viewRoles();
                 break;
-                // return promptUser();
             case 'View employees':
                 viewEmployees();
                 break;
-                // return promptUser();
             case 'Add department':
                 addDepartment();
+                break;
+            case 'Remove department':
+                removeDepartment();
+                break;
+            case 'Add role':
+                addRole();
+                break;
+            case 'Remove role':
+                removeRole();
                 break;
         }
     });
@@ -113,10 +120,75 @@ function addDepartment() {
         db.query('INSERT INTO departments SET ?',{
             name: answer.add_department
         });
-        console.log('added!!');
+        console.log('department added!!');
+        viewDepartments();
     })
-}
+};
 
+function addRole(){
+    inquirer
+    .prompt([
+        {
+            name: 'role_name',
+            type: 'input',
+            message: 'Enter a new role'
+        },
+        {
+            name: 'role_salary',
+            type: 'input',
+            message: 'Enter a salary number for this role'
+        },
+        {
+            name: 'role_dep',
+            type: 'input',
+            message: 'Please enter a department ID for this role'
+        }
+    ])
+    .then(answer => {
+        db.query('INSERT INTO roles SET ?', {
+            title: answer.role_name,
+            salary: answer.role_salary,
+            department_id: answer.role_dep
+        });
+        console.log('role added!!')
+        viewRoles();
+    })
+};
+// remove department
+
+function removeDepartment() {
+    inquirer
+    .prompt({
+        name: 'removedep',
+        type: 'input',
+        message: 'Are you sure you want to REMOVE a department? (PERMANENT) Enter ID:'
+    })
+    .then(answer => {
+        db.query('DELETE FROM departments WHERE ?',{
+            id: answer.removedep
+        })
+        console.log('Department removed!');
+        viewDepartments();
+    })
+};
+
+
+function removeRole() {
+    inquirer
+    .prompt({
+        name: 'removerole',
+        type: 'input',
+        message: 'Are you sure you want to REMOVE a role? (PERMANENT) Enter ID:'
+    })
+    .then(answer => {
+        db.query('DELETE FROM roles WHERE ?',{
+            id: answer.removerole
+        })
+        console.log('Role removed!');
+        viewRoles();
+    })
+};
+//ret
 //return prompt
 
 function returnPrompt() {
